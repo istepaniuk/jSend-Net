@@ -8,7 +8,9 @@ jSEND packed data. It is the reimplementation of it's PHP version and
 keeps a similar structure.
 
 The original package includes a PHP class for doing the server side
-decompression. More information on http://jsend.org/
+decompression. The original site was jsend.org but it seems to be a parked domain now.
+I wrote a post on this on my blog some time ago: 
+http://blog.istepaniuk.com/client-side-compression-with-javascript/
 
 DeJSEND usage example:
 
