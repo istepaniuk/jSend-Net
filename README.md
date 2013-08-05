@@ -1,3 +1,5 @@
+jSEND
+====
 jSEND is a javascript compression library created and maintained by 
 Michael Kortstiege - a web developer from near Hanover, Germany.
 
@@ -13,5 +15,4 @@ DeJSEND usage example:
     String data = context.Request.Form["data"];
     String unpackedData = DejSEND.GetData(data); 
 
---
 License: Dual licensed under the MIT or GPL Version 2 licenses.
