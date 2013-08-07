@@ -1,10 +1,9 @@
 using System;
-using System.Text;
 using System.Collections.Generic;
 
-namespace DejSEND
+namespace IStepaniuk.JSendNet
 {
-	public static class DejSEND
+	public static class DeJSend
 	{
 		public static String GetData (String iData)
 		{
