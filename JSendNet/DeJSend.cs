@@ -18,35 +18,7 @@ namespace IStepaniuk.JSendNet
 			if (!String.IsNullOrEmpty(s2))
 				sDataTmp2 = DecompressLZW (DecodeBinary (Decode847 (s2)));
 			String sData = "";
-			Dictionary<Byte, Char> aLookup = new Dictionary<Byte, Char> ();
 			
-			aLookup.Add (128, (Char) 8364);
-			aLookup.Add (130, (Char) 8218);
-			aLookup.Add (131, (Char) 402);
-			aLookup.Add (132, (Char) 8222);
-			aLookup.Add (133, (Char) 8230);
-			aLookup.Add (134, (Char) 8224);
-			aLookup.Add (135, (Char) 8225);
-			aLookup.Add (136, (Char) 710);
-			aLookup.Add (137, (Char) 8240);
-			aLookup.Add (138, (Char) 352);
-			aLookup.Add (139, (Char) 8249);
-			aLookup.Add (140, (Char) 338);
-			aLookup.Add (142, (Char) 381);
-			aLookup.Add (145, (Char) 8216);
-			aLookup.Add (146, (Char) 8217);
-			aLookup.Add (147, (Char) 8220);
-			aLookup.Add (148, (Char) 8221);
-			aLookup.Add (149, (Char) 8226);
-			aLookup.Add (150, (Char) 8211);
-			aLookup.Add (151, (Char) 8212);
-			aLookup.Add (152, (Char) 732);
-			aLookup.Add (153, (Char) 8482);
-			aLookup.Add (154, (Char) 353);
-			aLookup.Add (155, (Char) 8250);
-			aLookup.Add (156, (Char) 339);
-			aLookup.Add (158, (Char) 382);
-			aLookup.Add (159, (Char) 376);
 			
 			if (!String.IsNullOrEmpty (sDataTmp2)) {
 				for (Int32 i = 0; i < sDataTmp1.Length; i++) {
@@ -63,7 +35,7 @@ namespace IStepaniuk.JSendNet
 				sData = sDataTmp1;
 			}
 			
-			foreach (KeyValuePair<Byte, Char> pair in aLookup) {
+			foreach (KeyValuePair<Byte, Char> pair in LookUpTable()) {
 				String strFrom = "" ;
 				strFrom += (Char)pair.Key;
 				
@@ -75,6 +47,38 @@ namespace IStepaniuk.JSendNet
 			return sData.Substring (1);
 			
 		}
+
+        private static Dictionary<Byte, Char> LookUpTable(){
+            return new Dictionary<Byte, Char> {
+                { 128, (Char) 8364},
+                { 130, (Char) 8218},
+                { 131, (Char) 402},
+                { 132, (Char) 8222},
+                { 133, (Char) 8230},
+                { 134, (Char) 8224},
+                { 135, (Char) 8225},
+                { 136, (Char) 710},
+                { 137, (Char) 8240},
+                { 138, (Char) 352},
+                { 139, (Char) 8249},
+                { 140, (Char) 338},
+                { 142, (Char) 381},
+                { 145, (Char) 8216},
+                { 146, (Char) 8217},
+                { 147, (Char) 8220},
+                { 148, (Char) 8221},
+                { 149, (Char) 8226},
+                { 150, (Char) 8211},
+                { 151, (Char) 8212},
+                { 152, (Char) 732},
+                { 153, (Char) 8482},
+                { 154, (Char) 353},
+                { 155, (Char) 8250},
+                { 156, (Char) 339},
+                { 158, (Char) 382},
+                { 159, (Char) 376}
+            };
+        }
 
 		private static List<Char> Decode847 (String sChars)
 		{
