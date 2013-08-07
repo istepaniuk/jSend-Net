@@ -33,6 +33,17 @@ namespace IStepaniuk.JSendNetTests
 
             Assert.IsTrue(result == "臺灣");
         }
+
+        [Test]
+        public void LongStringIntegrationTests ()
+        {
+            const string compressedLongString = "TJ \b\rcJrN\a\f#I8N :0\f=7AjrG\bAbXQN!\nFDCF)\f^m8#\a3I<=l 0M\ffxdDZ 4GsC=l 6=69J\fgCad";
+
+            var result = deJSend.GetData(compressedLongString);
+
+            Assert.IsTrue(result == "A larger string that further tests that the decompression algorithm is working correctly");
+        }
+
     }
 }
 

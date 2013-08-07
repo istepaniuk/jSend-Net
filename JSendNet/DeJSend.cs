@@ -17,35 +17,27 @@ namespace IStepaniuk.JSendNet
             string sDataTmp2 = null;
             if (!String.IsNullOrEmpty (s2))
                 sDataTmp2 = DecompressLZW (DecodeBinary (Decode847 (s2)));
-            String sData = "";
+            string result = "";
 			
 			
             if (!String.IsNullOrEmpty (sDataTmp2)) {
                 for (Int32 i = 0; i < sDataTmp1.Length; i++) {
-                    Char sTmp1 = sDataTmp1 [i];
-                    Int32 sTmp2 = (Int32)sDataTmp2 [i];
+                    var sTmp1 = sDataTmp1 [i];
+                    var sTmp2 = (char)(Int32)sDataTmp2 [i];
                     if (sTmp2 != 224)
-                        sData += (Char)((Int32)sTmp1 + 256 * sTmp2);
-                    else if ((Int32)sTmp1 > 127)
-                        sData += sTmp1.ToString ();
+                        result += (Char)((Int32)sTmp1 + 256 * sTmp2);
                     else
-                        sData += sTmp1;
+                        result += sTmp1;
                 }
             } else {
-                sData = sDataTmp1;
+                result = sDataTmp1;
             }
 			
             foreach (KeyValuePair<Byte, Char> pair in LookUpTable()) {
-                String strFrom = "";
-                strFrom += (Char)pair.Key;
-				
-                String strTo = ""; 
-                strTo += pair.Value;
-				
-                sData = sData.Replace (strFrom, strTo);
+                result = result.Replace ((char)pair.Key, pair.Value);
             }
-            return sData.Substring (1);
-			
+
+            return result.Substring (1);
         }
 
         private Dictionary<Byte, Char> LookUpTable ()
@@ -84,55 +76,55 @@ namespace IStepaniuk.JSendNet
         private List<Char> Decode847 (string input)
         {
             var iByte = 7;
-            var iMask = 0;
-            var aCharCodes = new List<Char> ();
+            var mask = 0;
+            var charCodes = new List<Char> ();
 			
             for (var i = 0; i < input.Length; i++) {
-                var iValue = (Int32)(input [i]);
+                var value = (Int32)(input [i]);
 				
-                if (iValue == 61) {
+                if (value == 61) {
                     i++;
-                    iValue = (Int32)(input [i]) - 16;
+                    value = (Int32)(input [i]) - 16;
                 }
 				
                 if (iByte > 6) {
-                    iMask = iValue;
+                    mask = value;
                     iByte = 0;
 					
                 } else {
-                    Int32 pt = (Int32)Math.Ceiling (Math.Pow (2, iByte));
-                    if ((iMask & pt) == pt)
-                        iValue += 128;
-                    aCharCodes.Add ((Char)iValue);
+                    var nextPowerOfTwo = (Int32)Math.Ceiling (Math.Pow (2, iByte));
+                    if ((mask & nextPowerOfTwo) == nextPowerOfTwo)
+                        value += 128;
+                    charCodes.Add ((Char)value);
                     iByte++;
                 }
             }
-            return aCharCodes;
+            return charCodes;
 			
         }
 
         private List<Char> DecodeBinary (List<Char> input)
         {
-            var aCodes = new List<Char> ();
-            var iDictCount = 256;
-            var iBits = 8;
-            var iRest = 0;
-            var iRestLength = 0;
+            var codes = new List<Char> ();
+            var dictCount = 256;
+            var bits = 8;
+            var rest = 0;
+            var restLength = 0;
 			
-            for (Int32 i = 0; i < input.Count; i++) {
-                iRest = (iRest << 8) + (Int32)input [i];
-                iRestLength += 8;
+            foreach (var i in input) {
+                rest = (rest << 8) + (Int32)i;
+                restLength += 8;
 				
-                if (iRestLength >= iBits) {
-                    iRestLength -= iBits;
-                    aCodes.Add ((Char)(iRest >> iRestLength));
-                    iRest &= (1 << iRestLength) - 1;
-                    iDictCount++;
-                    if ((iDictCount >> iBits) > 0)
-                        iBits++;
+                if (restLength >= bits) {
+                    restLength -= bits;
+                    codes.Add ((Char)(rest >> restLength));
+                    rest &= (1 << restLength) - 1;
+                    dictCount++;
+                    if ((dictCount >> bits) > 0)
+                        bits++;
                 }
             }
-            return aCodes;
+            return codes;
 			
         }
 
