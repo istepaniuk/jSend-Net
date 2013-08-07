@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace IStepaniuk.JSendNet
 {
-	public static class DeJSend
+	public class DeJSend
 	{
-		public static String GetData (String iData)
+        public string GetData (string iData)
 		{
 			if (String.IsNullOrEmpty(iData)) {
 				return "";			
 			}
-			String[] elements = iData.Split (new String[] { "==" }, StringSplitOptions.None);
-			String s1 = elements[0];
-			String s2 = elements.Length > 1 ? elements[1] : null;
-			String sDataTmp1 = DecompressLZW(DecodeBinary(Decode847(s1)));
-			String sDataTmp2 = null;
+            var elements = iData.Split (new string[] { "==" }, StringSplitOptions.None);
+            var s1 = elements[0];
+            var s2 = elements.Length > 1 ? elements[1] : null;
+            var sDataTmp1 = DecompressLZW(DecodeBinary(Decode847(s1)));
+            string sDataTmp2 = null;
 			if (!String.IsNullOrEmpty(s2))
 				sDataTmp2 = DecompressLZW (DecodeBinary (Decode847 (s2)));
 			String sData = "";
@@ -48,7 +48,7 @@ namespace IStepaniuk.JSendNet
 			
 		}
 
-        private static Dictionary<Byte, Char> LookUpTable(){
+        private Dictionary<Byte, Char> LookUpTable(){
             return new Dictionary<Byte, Char> {
                 { 128, (Char) 8364},
                 { 130, (Char) 8218},
@@ -80,14 +80,14 @@ namespace IStepaniuk.JSendNet
             };
         }
 
-		private static List<Char> Decode847 (String sChars)
+        private List<Char> Decode847 (string sChars)
 		{
-			Int32 iByte = 7;
-			Int32 iMask = 0;
-			List<Char> aCharCodes = new List<Char> ();
+            var iByte = 7;
+            var iMask = 0;
+            var aCharCodes = new List<Char> ();
 			
-			for (Int32 i = 0; i < sChars.Length; i++) {
-				Int32 iValue = (Int32)(sChars[i]);
+            for (var i = 0; i < sChars.Length; i++) {
+                var iValue = (Int32)(sChars[i]);
 				
 				if (iValue == 61) {
 					i++;
@@ -110,13 +110,13 @@ namespace IStepaniuk.JSendNet
 			
 		}
 
-		private static List<Char> DecodeBinary (List<Char> aCharCodes)
+		private List<Char> DecodeBinary (List<Char> aCharCodes)
 		{
-			List<Char> aCodes = new List<Char> ();
-			Int32 iDictCount = 256;
-			Int32 iBits = 8;
-			Int32 iRest = 0;
-			Int32 iRestLength = 0;
+            var aCodes = new List<Char> ();
+            var iDictCount = 256;
+            var iBits = 8;
+            var iRest = 0;
+            var iRestLength = 0;
 			
 			for (Int32 i = 0; i < aCharCodes.Count; i++) {
 				iRest = (iRest << 8) + (Int32)aCharCodes[i];
@@ -135,20 +135,20 @@ namespace IStepaniuk.JSendNet
 			
 		}
 
-		private static String DecompressLZW (List<Char> aCodes)
+		private string DecompressLZW (List<Char> aCodes)
 		{
-			String sData = "";
-			List<String> oDictionary = new List<String> ();
+            var sData = "";
+            var oDictionary = new List<String> ();
 			
 			for (Int32 i = 0; i < 256; i++) {
-				Char ch = (Char) i;
+                var ch = (Char) i;
 				oDictionary.Add (ch.ToString ());
 			}
-			String sWord = "";
+            var sWord = "";
 			
-			for (Int32 sKey = 0; sKey < aCodes.Count; sKey++) {
-				String sElement = "";
-				Int32 iCode = aCodes[sKey];
+            for (var sKey = 0; sKey < aCodes.Count; sKey++) {
+                var sElement = "";
+                var iCode = aCodes[sKey];
 				
 				if (!(iCode >= 0 && iCode < oDictionary.Count)) {
 					
@@ -164,7 +164,7 @@ namespace IStepaniuk.JSendNet
 				}
 				sData += sElement;
 				if (sKey > 0) {
-					String newEntry = "";
+                    var newEntry = "";
 					if (sElement.Length > 0) {
 						newEntry += sWord + sElement[0];
 					}
