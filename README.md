@@ -15,6 +15,6 @@ http://blog.istepaniuk.com/client-side-compression-with-javascript/
 DeJSEND usage example:
 
     String data = context.Request.Form["data"];
-    String unpackedData = DejSEND.GetData(data); 
+    String unpackedData = new DejSEND().GetData(data); 
 
 License: Dual licensed under the MIT or GPL Version 2 licenses.
