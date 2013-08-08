@@ -5,25 +5,24 @@ namespace IStepaniuk.JSendNet
 {
     public class DeJSend
     {
+        private const string PartSeparator = "==";
+
         public string GetData (string input)
         {
             if (String.IsNullOrEmpty (input)) {
-                return "";			
+                return String.Empty;			
             }
-            var elements = input.Split (new string[] { "==" }, StringSplitOptions.None);
-            var s1 = elements [0];
-            var s2 = elements.Length > 1 ? elements [1] : null;
-            var sDataTmp1 = DecompressLZW (DecodeBinary(Decode847(s1)));
-            string sDataTmp2 = null;
-            if (!String.IsNullOrEmpty (s2))
-                sDataTmp2 = DecompressLZW (DecodeBinary (Decode847 (s2)));
-            string result = "";
-			
-			
-            if (!String.IsNullOrEmpty (sDataTmp2)) {
-                for (Int32 i = 0; i < sDataTmp1.Length; i++) {
+
+            var elements = input.Split (new string[] { PartSeparator }, StringSplitOptions.None);
+            var hasSecondPart = elements.Length > 1;
+            var sDataTmp1 = DecompressLZW (DecodeBinary(Decode847( elements [0])));
+
+            string result = String.Empty;
+            if (hasSecondPart) {
+                var sDataTmp2 = DecompressLZW (DecodeBinary (Decode847 (elements[1])));
+                for (var i = 0; i < sDataTmp1.Length; i++) {
                     var sTmp1 = sDataTmp1 [i];
-                    var sTmp2 = (char)(Int32)sDataTmp2 [i];
+                    var sTmp2 = sDataTmp2 [i];
                     if (sTmp2 != 224)
                         result += (Char)((Int32)sTmp1 + 256 * sTmp2);
                     else
@@ -33,44 +32,24 @@ namespace IStepaniuk.JSendNet
                 result = sDataTmp1;
             }
 			
-            foreach (KeyValuePair<Byte, Char> pair in LookUpTable()) {
-                result = result.Replace ((char)pair.Key, pair.Value);
-            }
-
-            return result.Substring (1);
+            return LookUpTableReplace (result).Substring(1);
         }
 
-        private Dictionary<Byte, Char> LookUpTable ()
+        private string LookUpTableReplace (string input)
         {
-            return new Dictionary<Byte, Char> {
-                { 128, (Char) 8364},
-                { 130, (Char) 8218},
-                { 131, (Char) 402},
-                { 132, (Char) 8222},
-                { 133, (Char) 8230},
-                { 134, (Char) 8224},
-                { 135, (Char) 8225},
-                { 136, (Char) 710},
-                { 137, (Char) 8240},
-                { 138, (Char) 352},
-                { 139, (Char) 8249},
-                { 140, (Char) 338},
-                { 142, (Char) 381},
-                { 145, (Char) 8216},
-                { 146, (Char) 8217},
-                { 147, (Char) 8220},
-                { 148, (Char) 8221},
-                { 149, (Char) 8226},
-                { 150, (Char) 8211},
-                { 151, (Char) 8212},
-                { 152, (Char) 732},
-                { 153, (Char) 8482},
-                { 154, (Char) 353},
-                { 155, (Char) 8250},
-                { 156, (Char) 339},
-                { 158, (Char) 382},
-                { 159, (Char) 376}
+            var table = new Dictionary<int, int> {
+                { 128, 8364 }, { 130, 8218 }, { 131, 402  }, { 132, 8222 }, 
+                { 133, 8230 }, { 134, 8224 }, { 135, 8225 }, { 136, 710  },
+                { 137, 8240 }, { 138, 352  }, { 139, 8249 }, { 140, 338  },
+                { 142, 381  }, { 145, 8216 }, { 146, 8217 }, { 147, 8220 },
+                { 148, 8221 }, { 149, 8226 }, { 150, 8211 }, { 151, 8212 },
+                { 152, 732  }, { 153, 8482 }, { 154, 353  }, { 155, 8250 },
+                { 156, 339  }, { 158, 382  }, { 159, 376  } 
             };
+            foreach (var pair in table) {
+                input = input.Replace ((char)pair.Key, (char)pair.Value);
+            }
+            return input;
         }
 
         private List<Char> Decode847 (string input)
@@ -128,7 +107,7 @@ namespace IStepaniuk.JSendNet
 			
         }
 
-        private string DecompressLZW (List<Char> input)
+        private string DecompressLZW (List<Char> inpsut)
         {
             var data = "";
             var dictionary = new List<String> ();
